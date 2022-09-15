@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/alibabacloud-go/tea/tea"
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/errors"
+	"strings"
 )
 
 const (
@@ -66,6 +67,9 @@ func TransferTeaErrorServerError(err error) error {
 			return err
 		}
 		return errors.NewServerError(errData.HttpCode, string(responseContent), "")
+	}
+	if strings.Contains(err.Error(), "Client.Timeout") {
+		return errors.NewClientError(errors.TimeoutErrorCode, err.Error(), err)
 	}
 	return err
 }
