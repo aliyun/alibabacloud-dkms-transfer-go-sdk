@@ -58,7 +58,7 @@ import (
 func main() {
 	config := &dedicatedkmsopenapi.Config{
 		Protocol:         tea.String("https"),
-		ClientKeyContent: tea.String(`<your client key content>`),
+		ClientKeyContent: tea.String("<your client key content>"),
 		Password:         tea.String("<your client key password>"),
 		Endpoint:         tea.String("<your dkms instance service endpoint>"),
 	}

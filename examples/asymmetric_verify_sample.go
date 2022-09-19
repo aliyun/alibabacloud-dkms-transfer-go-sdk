@@ -56,6 +56,7 @@ func main() {
 	}
 
 	fmt.Println("KeyId:", result.KeyId)
+	fmt.Println("KeyVersionId:", result.KeyVersionId)
 	fmt.Println("Value:", result.Value)
 	fmt.Println("RequestId:", result.RequestId)
 

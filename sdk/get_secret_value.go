@@ -3,6 +3,7 @@ package sdk
 import (
 	"bytes"
 	"encoding/json"
+	"encoding/xml"
 	"github.com/alibabacloud-go/tea/tea"
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/responses"
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/kms"
@@ -10,6 +11,7 @@ import (
 	dedicatedkmssdk "github.com/aliyun/alibabacloud-dkms-gcs-go-sdk/sdk"
 	"io/ioutil"
 	"net/http"
+	"strings"
 )
 
 func (client *KmsTransferClient) GetSecretValue(request *kms.GetSecretValueRequest) (*kms.GetSecretValueResponse, error) {
@@ -47,16 +49,23 @@ func (client *KmsTransferClient) GetSecretValue(request *kms.GetSecretValueReque
 		kmsResponse.VersionStages.VersionStage = append(kmsResponse.VersionStages.VersionStage, tea.StringValue(state))
 	}
 	kmsResponse.RequestId = tea.StringValue(dkmsResponse.RequestId)
-	body, err := json.Marshal(kmsResponse)
-	if err != nil {
-		return nil, err
+	var body []byte
+	if strings.ToUpper(request.AcceptFormat) == "JSON" {
+		body, err = json.Marshal(kmsResponse)
+		if err != nil {
+			return nil, err
+		}
+	} else if strings.ToUpper(request.AcceptFormat) == "XML" {
+		body, err = xml.Marshal(kmsResponse)
+		if err != nil {
+			return nil, err
+		}
 	}
-
 	httpResponse := &http.Response{}
 	httpResponse.StatusCode = http.StatusOK
 	httpResponse.Body = ioutil.NopCloser(bytes.NewReader(body))
 
-	err = responses.Unmarshal(kmsResponse, httpResponse, "JSON")
+	err = responses.Unmarshal(kmsResponse, httpResponse, request.AcceptFormat)
 	if err != nil {
 		return nil, err
 	}
