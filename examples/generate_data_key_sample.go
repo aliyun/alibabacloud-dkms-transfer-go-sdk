@@ -49,6 +49,7 @@ func main() {
 	}
 
 	fmt.Println("KeyId:", result.KeyId)
+	fmt.Println("KeyVersionId:", result.KeyVersionId)
 	fmt.Println("Plaintext:", result.Plaintext)
 	fmt.Println("CiphertextBlob:", result.CiphertextBlob)
 	fmt.Println("RequestId:", result.RequestId)

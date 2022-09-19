@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/base64"
 	"encoding/json"
+	"encoding/xml"
 	"errors"
 	"fmt"
 	"github.com/alibabacloud-go/tea/tea"
@@ -13,6 +14,7 @@ import (
 	dedicatedkmssdk "github.com/aliyun/alibabacloud-dkms-gcs-go-sdk/sdk"
 	"io/ioutil"
 	"net/http"
+	"strings"
 )
 
 func (client *KmsTransferClient) Encrypt(request *kms.EncryptRequest) (*kms.EncryptResponse, error) {
@@ -33,11 +35,11 @@ func (client *KmsTransferClient) Encrypt(request *kms.EncryptRequest) (*kms.Encr
 		return nil, TransferTeaErrorServerError(err)
 	}
 
-	versionId, ok := dkmsResponse.Headers[MigrationKeyVersionIdKey]
+	keyVersionId, ok := dkmsResponse.Headers[MigrationKeyVersionIdKey]
 	if !ok {
 		return nil, errors.New(fmt.Sprintf("Can not found response headers parameter[%s]", MigrationKeyVersionIdKey))
 	}
-	mkvId := []byte(tea.StringValue(versionId))
+	mkvId := []byte(tea.StringValue(keyVersionId))
 
 	var ciphertextBlob []byte
 	ciphertextBlob = append(ciphertextBlob, mkvId...)
@@ -46,17 +48,26 @@ func (client *KmsTransferClient) Encrypt(request *kms.EncryptRequest) (*kms.Encr
 
 	kmsResponse := kms.CreateEncryptResponse()
 	kmsResponse.KeyId = tea.StringValue(dkmsResponse.KeyId)
+	kmsResponse.KeyVersionId = tea.StringValue(keyVersionId)
 	kmsResponse.CiphertextBlob = base64.StdEncoding.EncodeToString(ciphertextBlob)
 	kmsResponse.RequestId = tea.StringValue(dkmsResponse.RequestId)
-	body, err := json.Marshal(kmsResponse)
-	if err != nil {
-		return nil, err
+	var body []byte
+	if strings.ToUpper(request.AcceptFormat) == "JSON" {
+		body, err = json.Marshal(kmsResponse)
+		if err != nil {
+			return nil, err
+		}
+	} else if strings.ToUpper(request.AcceptFormat) == "XML" {
+		body, err = xml.Marshal(kmsResponse)
+		if err != nil {
+			return nil, err
+		}
 	}
 	httpResponse := &http.Response{}
 	httpResponse.StatusCode = http.StatusOK
 	httpResponse.Body = ioutil.NopCloser(bytes.NewReader(body))
 
-	err = responses.Unmarshal(kmsResponse, httpResponse, "JSON")
+	err = responses.Unmarshal(kmsResponse, httpResponse, request.AcceptFormat)
 	if err != nil {
 		return nil, err
 	}
