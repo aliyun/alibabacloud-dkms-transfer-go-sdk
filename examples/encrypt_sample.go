@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/base64"
 	"fmt"
 	"github.com/alibabacloud-go/tea/tea"
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/kms"
@@ -42,7 +43,7 @@ func main() {
 
 	request := kms.CreateEncryptRequest()
 	request.KeyId = keyId
-	request.Plaintext = plaintext
+	request.Plaintext = base64.StdEncoding.EncodeToString([]byte(plaintext))
 
 	result, err := client.Encrypt(request)
 	if err != nil {
