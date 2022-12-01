@@ -51,7 +51,7 @@ func (client *KmsTransferClient) Decrypt(request *kms.DecryptRequest) (*kms.Decr
 	kmsResponse := kms.CreateDecryptResponse()
 	kmsResponse.KeyId = tea.StringValue(dkmsResponse.KeyId)
 	kmsResponse.KeyVersionId = tea.StringValue(keyVersionId)
-	kmsResponse.Plaintext = base64.StdEncoding.EncodeToString(dkmsResponse.Plaintext)
+	kmsResponse.Plaintext = string(dkmsResponse.Plaintext)
 	kmsResponse.RequestId = tea.StringValue(dkmsResponse.RequestId)
 	var body []byte
 	if strings.ToUpper(request.AcceptFormat) == "JSON" {
