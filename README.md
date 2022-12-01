@@ -39,6 +39,20 @@ Or, Run the following command to get the remote code package:
 $ go get -u github.com/aliyun/alibabacloud-dkms-transfer-go-sdk
 ```
 
+## Client Mechanism
+Alibaba Cloud Dedicated KMS Transfer SDK for Go transfers the the following method of request to dedicated KMS vpc gateway by default.
+
+* Encrypt
+* Decrypt
+* GenerateDataKey
+* GenerateDataKeyWithoutPlaintext
+* GetPublicKey
+* AsymmetricEncrypt
+* AsymmetricDecrypt
+* AsymmetricSign
+* AsymmetricVerify
+* GetSecretValue
+
 ## Quick Examples
 
 ```go

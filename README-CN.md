@@ -1,10 +1,10 @@
 [English](README.md) | 简体中文
 
-# 阿里云专属KMS适配SDK for Go
+# 阿里云专属KMS适配Go SDK
 
 ![](https://aliyunsdk-pages.alicdn.com/icons/AlibabaCloud.svg)
 
-阿里云专属KMS适配SDK for Go可以帮助Golang开发者快速完成由KMS密钥向专属KMS密钥迁移适配工作。
+阿里云专属KMS适配Go SDK可以帮助Golang开发者快速完成由KMS密钥向专属KMS密钥迁移适配工作。
 
 - [阿里云专属KMS主页](https://help.aliyun.com/document_detail/311016.html)
 - [代码示例](/examples)
@@ -40,6 +40,20 @@ require (
 ```
 $ go get -u github.com/aliyun/alibabacloud-dkms-transfer-go-sdk
 ```
+
+## 客户端机制
+阿里云专属KMS适配Go SDK默认将下面列表方法请求转发给专属KMS VPC网关。
+
+* Encrypt
+* Decrypt
+* GenerateDataKey
+* GenerateDataKeyWithoutPlaintext
+* GetPublicKey
+* AsymmetricEncrypt
+* AsymmetricDecrypt
+* AsymmetricSign
+* AsymmetricVerify
+* GetSecretValue
 
 ## 快速使用
 
