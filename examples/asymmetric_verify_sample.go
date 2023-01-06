@@ -7,12 +7,13 @@ import (
 	dedicatedkmsopenapi "github.com/aliyun/alibabacloud-dkms-gcs-go-sdk/openapi"
 	"github.com/aliyun/alibabacloud-dkms-transfer-go-sdk/sdk"
 	"io/ioutil"
+	"os"
 )
 
 func main() {
 	regionId := "<your region id>"
-	accessKeyId := "<your access key id>"
-	accessKeySecret := "<your access key secret>"
+	accessKeyId := os.Getenv("<your access key id env name>")
+	accessKeySecret := os.Getenv("<your access key secret env name>")
 
 	clientKeyContent := `<your client key content>`
 	password := "<your client key password>"

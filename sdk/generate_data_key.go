@@ -59,6 +59,16 @@ func (client *KmsTransferClient) GenerateDataKey(request *kms.GenerateDataKeyReq
 	if err != nil {
 		return nil, TransferTeaErrorServerError(err)
 	}
+	dkmsEncryptRequest := &dedicatedkmssdk.EncryptRequest{
+		KeyId:     tea.String(request.KeyId),
+		Plaintext: []byte(base64.StdEncoding.EncodeToString(dkmsResponse.Plaintext)),
+	}
+	encryptResponse, err := client.dkmsClient.EncryptWithOptions(dkmsEncryptRequest, runtimeOptions)
+	if err != nil {
+		return nil, TransferTeaErrorServerError(err)
+	}
+	dkmsResponse.Iv = encryptResponse.Iv
+	dkmsResponse.CiphertextBlob = encryptResponse.CiphertextBlob
 
 	keyVersionId, ok := dkmsResponse.Headers[MigrationKeyVersionIdKey]
 	if !ok {
