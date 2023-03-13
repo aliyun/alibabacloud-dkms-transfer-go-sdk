@@ -18,10 +18,18 @@ import (
 )
 
 func (client *KmsTransferClient) Encrypt(request *kms.EncryptRequest) (*kms.EncryptResponse, error) {
+	var aad []byte
+	if request.EncryptionContext != "" {
+		var err error
+		aad, err = EncodeUserEncryptionContext(request.EncryptionContext)
+		if err != nil {
+			return nil, err
+		}
+	}
 	dkmsRequest := &dedicatedkmssdk.EncryptRequest{
 		KeyId:     tea.String(request.KeyId),
 		Plaintext: []byte(request.Plaintext),
-		Aad:       []byte(request.EncryptionContext),
+		Aad:       aad,
 	}
 	ignoreSSL := client.GetHTTPSInsecure()
 	runtimeOptions := &dedicatedkmsopenapiutil.RuntimeOptions{

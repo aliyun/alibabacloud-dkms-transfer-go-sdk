@@ -16,7 +16,11 @@ import (
 
 func (client *KmsTransferClient) GetPublicKey(request *kms.GetPublicKeyRequest) (*kms.GetPublicKeyResponse, error) {
 	dkmsRequest := &dedicatedkmssdk.GetPublicKeyRequest{
-		KeyId: tea.String(request.KeyId),
+		Headers: make(map[string]*string),
+		KeyId:   tea.String(request.KeyId),
+	}
+	if request.KeyVersionId != "" {
+		dkmsRequest.Headers[MigrationKeyVersionIdKey] = tea.String(request.KeyVersionId)
 	}
 	ignoreSSL := client.GetHTTPSInsecure()
 	runtimeOptions := &dedicatedkmsopenapiutil.RuntimeOptions{

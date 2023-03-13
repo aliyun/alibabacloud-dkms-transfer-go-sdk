@@ -21,9 +21,13 @@ func (client *KmsTransferClient) AsymmetricEncrypt(request *kms.AsymmetricEncryp
 		return nil, err
 	}
 	dkmsRequest := &dedicatedkmssdk.EncryptRequest{
+		Headers:   make(map[string]*string),
 		KeyId:     tea.String(request.KeyId),
 		Plaintext: plaintext,
 		Algorithm: tea.String(request.Algorithm),
+	}
+	if request.KeyVersionId != "" {
+		dkmsRequest.Headers[MigrationKeyVersionIdKey] = tea.String(request.KeyVersionId)
 	}
 	ignoreSSL := client.GetHTTPSInsecure()
 	runtimeOptions := &dedicatedkmsopenapiutil.RuntimeOptions{
