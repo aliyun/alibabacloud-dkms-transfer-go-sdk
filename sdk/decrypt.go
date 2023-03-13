@@ -22,6 +22,14 @@ const (
 )
 
 func (client *KmsTransferClient) Decrypt(request *kms.DecryptRequest) (*kms.DecryptResponse, error) {
+	var aad []byte
+	if request.EncryptionContext != "" {
+		var err error
+		aad, err = EncodeUserEncryptionContext(request.EncryptionContext)
+		if err != nil {
+			return nil, err
+		}
+	}
 	ciphertext, err := base64.StdEncoding.DecodeString(request.CiphertextBlob)
 	if err != nil {
 		return nil, err
@@ -33,7 +41,7 @@ func (client *KmsTransferClient) Decrypt(request *kms.DecryptRequest) (*kms.Decr
 		Headers:        make(map[string]*string),
 		CiphertextBlob: ciphertextBlob,
 		Iv:             iv,
-		Aad:            []byte(request.EncryptionContext),
+		Aad:            aad,
 	}
 	dkmsRequest.Headers[MigrationKeyVersionIdKey] = tea.String(string(ektId))
 	ignoreSSL := client.GetHTTPSInsecure()

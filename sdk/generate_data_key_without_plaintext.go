@@ -18,6 +18,14 @@ import (
 )
 
 func (client *KmsTransferClient) GenerateDataKeyWithoutPlaintext(request *kms.GenerateDataKeyWithoutPlaintextRequest) (*kms.GenerateDataKeyWithoutPlaintextResponse, error) {
+	var aad []byte
+	if request.EncryptionContext != "" {
+		var err error
+		aad, err = EncodeUserEncryptionContext(request.EncryptionContext)
+		if err != nil {
+			return nil, err
+		}
+	}
 	numberOfBytesInteger := request.NumberOfBytes
 	if !request.NumberOfBytes.HasValue() {
 		if request.KeySpec == "" {
@@ -41,7 +49,7 @@ func (client *KmsTransferClient) GenerateDataKeyWithoutPlaintext(request *kms.Ge
 	dkmsRequest := &dedicatedkmssdk.GenerateDataKeyRequest{
 		KeyId:         tea.String(request.KeyId),
 		NumberOfBytes: tea.Int32(int32(numberOfBytes)),
-		Aad:           []byte(request.EncryptionContext),
+		Aad:           aad,
 	}
 	ignoreSSL := client.GetHTTPSInsecure()
 	runtimeOptions := &dedicatedkmsopenapiutil.RuntimeOptions{
@@ -57,6 +65,7 @@ func (client *KmsTransferClient) GenerateDataKeyWithoutPlaintext(request *kms.Ge
 	dkmsEncryptRequest := &dedicatedkmssdk.EncryptRequest{
 		KeyId:     tea.String(request.KeyId),
 		Plaintext: []byte(base64.StdEncoding.EncodeToString(dkmsResponse.Plaintext)),
+		Aad:       aad,
 	}
 	encryptResponse, err := client.dkmsClient.EncryptWithOptions(dkmsEncryptRequest, runtimeOptions)
 	if err != nil {

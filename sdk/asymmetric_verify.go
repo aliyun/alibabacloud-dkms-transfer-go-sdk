@@ -25,11 +25,15 @@ func (client *KmsTransferClient) AsymmetricVerify(request *kms.AsymmetricVerifyR
 		return nil, err
 	}
 	dkmsRequest := &dedicatedkmssdk.VerifyRequest{
+		Headers:     make(map[string]*string),
 		KeyId:       tea.String(request.KeyId),
 		Signature:   signature,
 		Message:     message,
 		MessageType: tea.String("DIGEST"),
 		Algorithm:   tea.String(request.Algorithm),
+	}
+	if request.KeyVersionId != "" {
+		dkmsRequest.Headers[MigrationKeyVersionIdKey] = tea.String(request.KeyVersionId)
 	}
 	ignoreSSL := client.GetHTTPSInsecure()
 	runtimeOptions := &dedicatedkmsopenapiutil.RuntimeOptions{
