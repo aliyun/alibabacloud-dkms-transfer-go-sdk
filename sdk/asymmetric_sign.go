@@ -16,6 +16,9 @@ import (
 )
 
 func (client *KmsTransferClient) AsymmetricSign(request *kms.AsymmetricSignRequest) (*kms.AsymmetricSignResponse, error) {
+	if client.isUseKmsShareGateway {
+		return client.Client.AsymmetricSign(request)
+	}
 	message, err := base64.StdEncoding.DecodeString(request.Digest)
 	if err != nil {
 		return nil, err

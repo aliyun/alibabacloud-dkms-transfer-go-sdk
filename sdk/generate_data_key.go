@@ -23,6 +23,9 @@ const (
 )
 
 func (client *KmsTransferClient) GenerateDataKey(request *kms.GenerateDataKeyRequest) (*kms.GenerateDataKeyResponse, error) {
+	if client.isUseKmsShareGateway {
+		return client.Client.GenerateDataKey(request)
+	}
 	var aad []byte
 	if request.EncryptionContext != "" {
 		var err error

@@ -15,6 +15,9 @@ import (
 )
 
 func (client *KmsTransferClient) GetSecretValue(request *kms.GetSecretValueRequest) (*kms.GetSecretValueResponse, error) {
+	if client.isUseKmsShareGateway {
+		return client.Client.GetSecretValue(request)
+	}
 	fetchExtendedConfig, _ := request.FetchExtendedConfig.GetValue()
 	dkmsRequest := &dedicatedkmssdk.GetSecretValueRequest{
 		SecretName:          tea.String(request.SecretName),

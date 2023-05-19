@@ -16,6 +16,9 @@ import (
 )
 
 func (client *KmsTransferClient) AsymmetricVerify(request *kms.AsymmetricVerifyRequest) (*kms.AsymmetricVerifyResponse, error) {
+	if client.isUseKmsShareGateway {
+		return client.Client.AsymmetricVerify(request)
+	}
 	message, err := base64.StdEncoding.DecodeString(request.Digest)
 	if err != nil {
 		return nil, err

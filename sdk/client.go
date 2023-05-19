@@ -11,9 +11,9 @@ import (
 
 type KmsTransferClient struct {
 	*kms.Client
-	dkmsClient *dedicatedkmssdk.Client
-
-	Verify string
+	dkmsClient           *dedicatedkmssdk.Client
+	isUseKmsShareGateway bool
+	Verify               string
 }
 
 func (client *KmsTransferClient) SetVerify(v string) {
@@ -25,11 +25,16 @@ func NewClientWithProvider(regionId string, dkmsConfig *dedicatedkmsopenapi.Conf
 	if err != nil {
 		return nil, err
 	}
-	dkmsClient, err := dedicatedkmssdk.NewClient(dkmsConfig)
-	if err != nil {
-		return nil, TransferTeaErrorClientError(err)
+	if dkmsConfig != nil {
+		dkmsClient, err := dedicatedkmssdk.NewClient(dkmsConfig)
+		if err != nil {
+			return nil, TransferTeaErrorClientError(err)
+		}
+		return &KmsTransferClient{Client: kmsClient, dkmsClient: dkmsClient}, nil
+	} else {
+		return &KmsTransferClient{Client: kmsClient, isUseKmsShareGateway: true}, nil
 	}
-	return &KmsTransferClient{Client: kmsClient, dkmsClient: dkmsClient}, nil
+
 }
 
 func NewClientWithOptions(regionId string, kmsConfig *sdk.Config, credential auth.Credential, dkmsConfig *dedicatedkmsopenapi.Config) (*KmsTransferClient, error) {
@@ -37,11 +42,15 @@ func NewClientWithOptions(regionId string, kmsConfig *sdk.Config, credential aut
 	if err != nil {
 		return nil, err
 	}
-	dkmsClient, err := dedicatedkmssdk.NewClient(dkmsConfig)
-	if err != nil {
-		return nil, TransferTeaErrorClientError(err)
+	if dkmsConfig != nil {
+		dkmsClient, err := dedicatedkmssdk.NewClient(dkmsConfig)
+		if err != nil {
+			return nil, TransferTeaErrorClientError(err)
+		}
+		return &KmsTransferClient{Client: kmsClient, dkmsClient: dkmsClient}, nil
+	} else {
+		return &KmsTransferClient{Client: kmsClient, isUseKmsShareGateway: true}, nil
 	}
-	return &KmsTransferClient{Client: kmsClient, dkmsClient: dkmsClient}, nil
 }
 
 func NewClientWithAccessKey(regionId, accessKeyId, accessKeySecret string, dkmsConfig *dedicatedkmsopenapi.Config) (*KmsTransferClient, error) {
@@ -49,11 +58,15 @@ func NewClientWithAccessKey(regionId, accessKeyId, accessKeySecret string, dkmsC
 	if err != nil {
 		return nil, err
 	}
-	dkmsClient, err := dedicatedkmssdk.NewClient(dkmsConfig)
-	if err != nil {
-		return nil, TransferTeaErrorClientError(err)
+	if dkmsConfig != nil {
+		dkmsClient, err := dedicatedkmssdk.NewClient(dkmsConfig)
+		if err != nil {
+			return nil, TransferTeaErrorClientError(err)
+		}
+		return &KmsTransferClient{Client: kmsClient, dkmsClient: dkmsClient}, nil
+	} else {
+		return &KmsTransferClient{Client: kmsClient, isUseKmsShareGateway: true}, nil
 	}
-	return &KmsTransferClient{Client: kmsClient, dkmsClient: dkmsClient}, nil
 }
 
 func NewClientWithStsToken(regionId, stsAccessKeyId, stsAccessKeySecret, stsToken string, dkmsConfig *dedicatedkmsopenapi.Config) (*KmsTransferClient, error) {
@@ -61,11 +74,15 @@ func NewClientWithStsToken(regionId, stsAccessKeyId, stsAccessKeySecret, stsToke
 	if err != nil {
 		return nil, err
 	}
-	dkmsClient, err := dedicatedkmssdk.NewClient(dkmsConfig)
-	if err != nil {
-		return nil, TransferTeaErrorClientError(err)
+	if dkmsConfig != nil {
+		dkmsClient, err := dedicatedkmssdk.NewClient(dkmsConfig)
+		if err != nil {
+			return nil, TransferTeaErrorClientError(err)
+		}
+		return &KmsTransferClient{Client: kmsClient, dkmsClient: dkmsClient}, nil
+	} else {
+		return &KmsTransferClient{Client: kmsClient, isUseKmsShareGateway: true}, nil
 	}
-	return &KmsTransferClient{Client: kmsClient, dkmsClient: dkmsClient}, nil
 }
 
 func NewClientWithRamRoleArn(regionId string, accessKeyId, accessKeySecret, roleArn, roleSessionName string, dkmsConfig *dedicatedkmsopenapi.Config) (*KmsTransferClient, error) {
@@ -73,11 +90,15 @@ func NewClientWithRamRoleArn(regionId string, accessKeyId, accessKeySecret, role
 	if err != nil {
 		return nil, err
 	}
-	dkmsClient, err := dedicatedkmssdk.NewClient(dkmsConfig)
-	if err != nil {
-		return nil, TransferTeaErrorClientError(err)
+	if dkmsConfig != nil {
+		dkmsClient, err := dedicatedkmssdk.NewClient(dkmsConfig)
+		if err != nil {
+			return nil, TransferTeaErrorClientError(err)
+		}
+		return &KmsTransferClient{Client: kmsClient, dkmsClient: dkmsClient}, nil
+	} else {
+		return &KmsTransferClient{Client: kmsClient, isUseKmsShareGateway: true}, nil
 	}
-	return &KmsTransferClient{Client: kmsClient, dkmsClient: dkmsClient}, nil
 }
 
 func NewClientWithRamRoleArnAndPolicy(regionId string, accessKeyId, accessKeySecret, roleArn, roleSessionName, policy string, dkmsConfig *dedicatedkmsopenapi.Config) (*KmsTransferClient, error) {
@@ -85,11 +106,15 @@ func NewClientWithRamRoleArnAndPolicy(regionId string, accessKeyId, accessKeySec
 	if err != nil {
 		return nil, err
 	}
-	dkmsClient, err := dedicatedkmssdk.NewClient(dkmsConfig)
-	if err != nil {
-		return nil, TransferTeaErrorClientError(err)
+	if dkmsConfig != nil {
+		dkmsClient, err := dedicatedkmssdk.NewClient(dkmsConfig)
+		if err != nil {
+			return nil, TransferTeaErrorClientError(err)
+		}
+		return &KmsTransferClient{Client: kmsClient, dkmsClient: dkmsClient}, nil
+	} else {
+		return &KmsTransferClient{Client: kmsClient, isUseKmsShareGateway: true}, nil
 	}
-	return &KmsTransferClient{Client: kmsClient, dkmsClient: dkmsClient}, nil
 }
 
 func NewClientWithEcsRamRole(regionId string, roleName string, dkmsConfig *dedicatedkmsopenapi.Config) (*KmsTransferClient, error) {
@@ -97,11 +122,15 @@ func NewClientWithEcsRamRole(regionId string, roleName string, dkmsConfig *dedic
 	if err != nil {
 		return nil, err
 	}
-	dkmsClient, err := dedicatedkmssdk.NewClient(dkmsConfig)
-	if err != nil {
-		return nil, TransferTeaErrorClientError(err)
+	if dkmsConfig != nil {
+		dkmsClient, err := dedicatedkmssdk.NewClient(dkmsConfig)
+		if err != nil {
+			return nil, TransferTeaErrorClientError(err)
+		}
+		return &KmsTransferClient{Client: kmsClient, dkmsClient: dkmsClient}, nil
+	} else {
+		return &KmsTransferClient{Client: kmsClient, isUseKmsShareGateway: true}, nil
 	}
-	return &KmsTransferClient{Client: kmsClient, dkmsClient: dkmsClient}, nil
 }
 
 func NewClientWithRsaKeyPair(regionId string, publicKeyId, privateKey string, sessionExpiration int, dkmsConfig *dedicatedkmsopenapi.Config) (*KmsTransferClient, error) {
@@ -109,9 +138,13 @@ func NewClientWithRsaKeyPair(regionId string, publicKeyId, privateKey string, se
 	if err != nil {
 		return nil, err
 	}
-	dkmsClient, err := dedicatedkmssdk.NewClient(dkmsConfig)
-	if err != nil {
-		return nil, TransferTeaErrorClientError(err)
+	if dkmsConfig != nil {
+		dkmsClient, err := dedicatedkmssdk.NewClient(dkmsConfig)
+		if err != nil {
+			return nil, TransferTeaErrorClientError(err)
+		}
+		return &KmsTransferClient{Client: kmsClient, dkmsClient: dkmsClient}, nil
+	} else {
+		return &KmsTransferClient{Client: kmsClient, isUseKmsShareGateway: true}, nil
 	}
-	return &KmsTransferClient{Client: kmsClient, dkmsClient: dkmsClient}, nil
 }
