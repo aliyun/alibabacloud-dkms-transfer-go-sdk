@@ -15,6 +15,9 @@ import (
 )
 
 func (client *KmsTransferClient) GetPublicKey(request *kms.GetPublicKeyRequest) (*kms.GetPublicKeyResponse, error) {
+	if client.isUseKmsShareGateway {
+		return client.Client.GetPublicKey(request)
+	}
 	dkmsRequest := &dedicatedkmssdk.GetPublicKeyRequest{
 		Headers: make(map[string]*string),
 		KeyId:   tea.String(request.KeyId),

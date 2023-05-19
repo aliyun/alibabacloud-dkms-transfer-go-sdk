@@ -16,6 +16,9 @@ import (
 )
 
 func (client *KmsTransferClient) AsymmetricEncrypt(request *kms.AsymmetricEncryptRequest) (*kms.AsymmetricEncryptResponse, error) {
+	if client.isUseKmsShareGateway {
+		return client.Client.AsymmetricEncrypt(request)
+	}
 	plaintext, err := base64.StdEncoding.DecodeString(request.Plaintext)
 	if err != nil {
 		return nil, err

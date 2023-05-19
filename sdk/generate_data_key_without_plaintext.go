@@ -18,6 +18,9 @@ import (
 )
 
 func (client *KmsTransferClient) GenerateDataKeyWithoutPlaintext(request *kms.GenerateDataKeyWithoutPlaintextRequest) (*kms.GenerateDataKeyWithoutPlaintextResponse, error) {
+	if client.isUseKmsShareGateway {
+		return client.Client.GenerateDataKeyWithoutPlaintext(request)
+	}
 	var aad []byte
 	if request.EncryptionContext != "" {
 		var err error

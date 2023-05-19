@@ -22,6 +22,9 @@ const (
 )
 
 func (client *KmsTransferClient) Decrypt(request *kms.DecryptRequest) (*kms.DecryptResponse, error) {
+	if client.isUseKmsShareGateway {
+		return client.Client.Decrypt(request)
+	}
 	var aad []byte
 	if request.EncryptionContext != "" {
 		var err error

@@ -16,6 +16,9 @@ import (
 )
 
 func (client *KmsTransferClient) AsymmetricDecrypt(request *kms.AsymmetricDecryptRequest) (*kms.AsymmetricDecryptResponse, error) {
+	if client.isUseKmsShareGateway {
+		return client.Client.AsymmetricDecrypt(request)
+	}
 	ciphertextBlob, err := base64.StdEncoding.DecodeString(request.CiphertextBlob)
 	if err != nil {
 		return nil, err

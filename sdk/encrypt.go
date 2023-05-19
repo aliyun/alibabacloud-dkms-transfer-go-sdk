@@ -18,6 +18,9 @@ import (
 )
 
 func (client *KmsTransferClient) Encrypt(request *kms.EncryptRequest) (*kms.EncryptResponse, error) {
+	if client.isUseKmsShareGateway {
+		return client.Client.Encrypt(request)
+	}
 	var aad []byte
 	if request.EncryptionContext != "" {
 		var err error
