@@ -1,12 +1,19 @@
 package sdk
 
 import (
+	"github.com/alibabacloud-go/tea/tea"
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk"
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/auth"
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/auth/credentials/provider"
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/kms"
 	dedicatedkmsopenapi "github.com/aliyun/alibabacloud-dkms-gcs-go-sdk/openapi"
 	dedicatedkmssdk "github.com/aliyun/alibabacloud-dkms-gcs-go-sdk/sdk"
+)
+
+const (
+	SDK_NSAME      = "alibabacloud-dkms-transfer-go-sdk"
+	SDK_VERSION    = "0.2.1"
+	SDK_USER_AGENT = SDK_NSAME + "/" + SDK_VERSION
 )
 
 type KmsTransferClient struct {
@@ -26,6 +33,7 @@ func NewClientWithProvider(regionId string, dkmsConfig *dedicatedkmsopenapi.Conf
 		return nil, err
 	}
 	if dkmsConfig != nil {
+		setUserAgent(dkmsConfig)
 		dkmsClient, err := dedicatedkmssdk.NewClient(dkmsConfig)
 		if err != nil {
 			return nil, TransferTeaErrorClientError(err)
@@ -43,6 +51,7 @@ func NewClientWithOptions(regionId string, kmsConfig *sdk.Config, credential aut
 		return nil, err
 	}
 	if dkmsConfig != nil {
+		setUserAgent(dkmsConfig)
 		dkmsClient, err := dedicatedkmssdk.NewClient(dkmsConfig)
 		if err != nil {
 			return nil, TransferTeaErrorClientError(err)
@@ -59,6 +68,7 @@ func NewClientWithAccessKey(regionId, accessKeyId, accessKeySecret string, dkmsC
 		return nil, err
 	}
 	if dkmsConfig != nil {
+		setUserAgent(dkmsConfig)
 		dkmsClient, err := dedicatedkmssdk.NewClient(dkmsConfig)
 		if err != nil {
 			return nil, TransferTeaErrorClientError(err)
@@ -75,6 +85,7 @@ func NewClientWithStsToken(regionId, stsAccessKeyId, stsAccessKeySecret, stsToke
 		return nil, err
 	}
 	if dkmsConfig != nil {
+		setUserAgent(dkmsConfig)
 		dkmsClient, err := dedicatedkmssdk.NewClient(dkmsConfig)
 		if err != nil {
 			return nil, TransferTeaErrorClientError(err)
@@ -91,6 +102,7 @@ func NewClientWithRamRoleArn(regionId string, accessKeyId, accessKeySecret, role
 		return nil, err
 	}
 	if dkmsConfig != nil {
+		setUserAgent(dkmsConfig)
 		dkmsClient, err := dedicatedkmssdk.NewClient(dkmsConfig)
 		if err != nil {
 			return nil, TransferTeaErrorClientError(err)
@@ -107,6 +119,7 @@ func NewClientWithRamRoleArnAndPolicy(regionId string, accessKeyId, accessKeySec
 		return nil, err
 	}
 	if dkmsConfig != nil {
+		setUserAgent(dkmsConfig)
 		dkmsClient, err := dedicatedkmssdk.NewClient(dkmsConfig)
 		if err != nil {
 			return nil, TransferTeaErrorClientError(err)
@@ -123,6 +136,7 @@ func NewClientWithEcsRamRole(regionId string, roleName string, dkmsConfig *dedic
 		return nil, err
 	}
 	if dkmsConfig != nil {
+		setUserAgent(dkmsConfig)
 		dkmsClient, err := dedicatedkmssdk.NewClient(dkmsConfig)
 		if err != nil {
 			return nil, TransferTeaErrorClientError(err)
@@ -139,6 +153,7 @@ func NewClientWithRsaKeyPair(regionId string, publicKeyId, privateKey string, se
 		return nil, err
 	}
 	if dkmsConfig != nil {
+		setUserAgent(dkmsConfig)
 		dkmsClient, err := dedicatedkmssdk.NewClient(dkmsConfig)
 		if err != nil {
 			return nil, TransferTeaErrorClientError(err)
@@ -147,4 +162,13 @@ func NewClientWithRsaKeyPair(regionId string, publicKeyId, privateKey string, se
 	} else {
 		return &KmsTransferClient{Client: kmsClient, isUseKmsShareGateway: true}, nil
 	}
+}
+
+func setUserAgent(config *dedicatedkmsopenapi.Config) {
+	if config.UserAgent != nil {
+		config.UserAgent = tea.String(tea.StringValue(config.UserAgent) + " " + SDK_USER_AGENT)
+	} else {
+		config.UserAgent = tea.String(SDK_USER_AGENT)
+	}
+
 }
