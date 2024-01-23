@@ -12,7 +12,7 @@ import (
 
 const (
 	SDK_NSAME      = "alibabacloud-dkms-transfer-go-sdk"
-	SDK_VERSION    = "0.1.8"
+	SDK_VERSION    = "0.1.9"
 	SDK_USER_AGENT = SDK_NSAME + "/" + SDK_VERSION
 )
 

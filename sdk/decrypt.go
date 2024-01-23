@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"encoding/xml"
+	"errors"
 	"github.com/alibabacloud-go/tea/tea"
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/responses"
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/kms"
@@ -36,6 +37,9 @@ func (client *KmsTransferClient) Decrypt(request *kms.DecryptRequest) (*kms.Decr
 	ciphertext, err := base64.StdEncoding.DecodeString(request.CiphertextBlob)
 	if err != nil {
 		return nil, err
+	}
+	if len(ciphertext) <= EktIdLength+GcmIvLength {
+		return nil, errors.New("the parameter CiphertextBlob length is too small")
 	}
 	ektId := ciphertext[:EktIdLength]
 	iv := ciphertext[EktIdLength : EktIdLength+GcmIvLength]
