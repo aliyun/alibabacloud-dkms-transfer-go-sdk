@@ -31,7 +31,7 @@
 
 ```
 require (
-	github.com/aliyun/alibabacloud-dkms-transfer-go-sdk v0.1.8
+	github.com/aliyun/alibabacloud-dkms-transfer-go-sdk v0.1.9
 )
 ```
 
